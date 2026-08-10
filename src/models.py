@@ -10,7 +10,7 @@ class Book:
             raise ValueError(f"{self.title} already borrowed")
         self.is_borrowed = True
 
-    def is_return(self):
+    def return_book(self):
         self.is_borrowed = False
 
     def __repr__(self):
@@ -24,4 +24,28 @@ class Member:
 
     def __repr__(self):
         return f"Member('{self.name}' books held {len(self.borrowed_books)})"
+
+class Library:
+    def __init__(self):
+        self.books = {}
+        self.members = {}
+
+    def add_book(self, book: Book):
+        self.books[book.isbn] = book
+
+    def add_member(self, member: Member):
+        self.members[member.member_id] = member
+
+    def lend_book(self,*,member_id, isbn):
+        book = self.books.get(isbn)
+        member = self.members.get(member_id)
+        if not member:
+            raise ValueError("Member not registered")
+        if not book:
+            raise ValueError("Book not available")
+        book.borrow()
+        member.borrowed_books.append(book)
+
+
+
 
