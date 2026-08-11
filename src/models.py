@@ -3,15 +3,19 @@ class Book:
         self.title = title
         self.author = author
         self.isbn = isbn
-        self.is_borrowed = False
+        self._is_borrowed = False
+
+    @property
+    def is_borrowed(self):
+        return self._is_borrowed
 
     def borrow(self):
-        if self.is_borrowed:
+        if self._is_borrowed:
             raise ValueError(f"{self.title} already borrowed")
-        self.is_borrowed = True
+        self._is_borrowed = True
 
     def return_book(self):
-        self.is_borrowed = False
+        self._is_borrowed = False
 
     def __repr__(self):
         return f"Book('{self.title}','{self.author}', '{self.isbn}')"
