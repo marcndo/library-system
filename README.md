@@ -1,3 +1,6 @@
+
+## Class Diagram
+
 ```mermaid
 classDiagram
     class AbstractBook {
