@@ -1,4 +1,5 @@
-# Artifacts
+# Design Documentation
+
 
 ## CRC cards
 
@@ -44,6 +45,7 @@ Responsibilities                     | Collaborators
 Note: Book and Ebook implement this contract (is-a) AbstractBook has no collaborators, only implementers.
 
 ## UML class
+See the class diagram in the [README](../README.md#class-diagram).
 
 AbstractBook abstract
 ---------------
