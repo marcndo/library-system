@@ -1,5 +1,6 @@
 # Artifacts
 
+## CRC cards
 
 Class: Book
 -------------------------------------------------
@@ -41,3 +42,58 @@ Responsibilities                     | Collaborators
 - declare that borrow must exist     | none
 - declare that return book must exist| none
 Note: Book and Ebook implement this contract (is-a) AbstractBook has no collaborators, only implementers.
+
+## UML class
+
+AbstractBook abstract
+---------------
+(no attributes)
+---------------
++ borrow()
++ return_book()
+
+Book
+---------------
++ title: str
++ isbn: str
++ is_borrowed : bool
++ author: str
+---------------
++ borrow(): bool
++ return_book(): bool
+Book inherits from AbstractBook
+
+Member
+---------------
++ name: str
++ member_id: str
++ borrowed_books: list
+---------------
+- no private method
++ no public method
+
+Ebook
+---------------
++ title: str
++ isbn: str
++ is_borrowed : bool
++ author: str
++ file_size_mb
+---------------
++ borrow(): bool
++ return_book(): bool
+NB.Ebook inherits from AbstractBook
+
+
+Labrary
+---------------
++ books: dict
++ members: dict
+---------------
++ add_book(): none
++ add_member(): none
++ lend_book(): none
+NB:Library aggregates Book and Member (has-many, but they can exist independently)
+calls methods on books and members
+
+
