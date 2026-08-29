@@ -45,6 +45,21 @@ class BookRepository:
             books.append(self._to_domain(orm_book))
         return books
 
+
+    def update_book(self, book: Book, member_id: int =None):
+        orm_book = self.session.scalars(
+                    select(BookORM).where(BookORM.isbn==book.isbn)
+                    ).first()
+        if not orm_book:
+            raise ValueError(f"Cannot update -- no book with ISBN {book.isbn} exists.")
+        orm_book.is_borrowed = book.is_borrowed
+        if member_id is not None:
+            orm_member = self.session.scalars(
+            select(MemberORM).where(MemberORM.member_id == member_id)
+            ).first()
+            orm_book.member_id = orm_member.id
+        self.session.flush()
+
 class MemberRepository:
     def __init__(self, session):
         self.session = session
