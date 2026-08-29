@@ -4,3 +4,4 @@ __pycache__/
 notes.txt
 touch.excalidraw
 test.py
+*.db
