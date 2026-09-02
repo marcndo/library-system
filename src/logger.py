@@ -10,4 +10,8 @@ def get_logger(name: str) -> logging.Logger:
         )
         handler.setFormatter(formatter)
         logger.addHandler(handler)
+        file_handler = logging.FileHandler("app.log")
+        file_handler.setFormatter(formatter)
+        logger.addHandler(file_handler)
+
     return logger

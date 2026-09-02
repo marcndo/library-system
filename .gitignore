@@ -5,3 +5,4 @@ notes.txt
 touch.excalidraw
 test.py
 *.db
+*.log
