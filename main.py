@@ -62,4 +62,12 @@ def lend_book(request: BookLendRequest):
         library.lend_book(isbn=book_isbn, member_id=member_id)
         session.commit()
         return {"message":f"book {book_isbn} successfully borrowed by {member_id}"}
-        
+
+@app.get("/books/{isbn}")
+def get_book(isbn: str):
+    with Session(engine) as session:
+        book_repo = BookRepository(session)
+        book = book_repo.get_by_isbn(isbn)
+        if book is None:
+            raise ValueError(f"No book with isbn {isbn} found.")
+        return {"title":book.title, "author":book.author, "isbn":book.isbn, "borrowed":book.is_borrowed}
