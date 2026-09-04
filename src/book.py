@@ -2,7 +2,12 @@ from src.abstract_book import AbstractBook
 
 class Book(AbstractBook):
     def __init__(self, title, author, isbn):
-        self._title = title
+        if not isinstance(isbn, str):
+            raise ValueError("Check to ensure that you entered the correct ISBN number")
+        isbn = isbn.strip()
+        if not isbn:
+            raise ValueError("Check to ensure that you entered the correct ISBN number")
+        self.title = title
         self.author = author
         self._isbn = isbn
         self._is_borrowed = False
@@ -10,6 +15,7 @@ class Book(AbstractBook):
     @property
     def is_borrowed(self):
         return self._is_borrowed
+
     
     @property
     def title(self):
@@ -29,7 +35,6 @@ class Book(AbstractBook):
     def isbn(self):
         return self._isbn
     
-
 
     def borrow(self):
         if self._is_borrowed:
