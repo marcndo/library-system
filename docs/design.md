@@ -23,7 +23,7 @@ Class: Library
 -------------------------------------------------
 Responsibilities           | Collaborators
 - add books to iself       | Book
-- add memeber to itself    | Member
+- add member to itself    | Member
 - lend out books to members| Book, Member
 
 
