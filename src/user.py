@@ -1,18 +1,22 @@
 from pwdlib import PasswordHash
 
-password_hash = PasswordHash.recommended()
+hash_password = PasswordHash.recommended()
 
 class User:
-    def __init__(self, user_name:str, hash_password:str):
+    def __init__(self, user_name:str, hashed_password:str):
         self.user_name = user_name
-        self.hash_password = hash_password
+        self._hashed_password = hashed_password
+
+    @property
+    def hashed_password(self):
+        return self._hashed_password
     
     def verify_password(self, plain_password: str):
-        return password_hash.verify(plain_password,self.hash_password)
+        return hash_password.verify(plain_password,self.hashed_password)
    
     @classmethod
     def create(cls, user_name: str, plain_password:str):
-        hashed = password_hash.hash(plain_password)
+        hashed = hash_password.hash(plain_password)
         return cls(user_name, hashed)
 
     def __repr__(self):

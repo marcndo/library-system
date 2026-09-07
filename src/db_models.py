@@ -26,3 +26,13 @@ class MemberORM(Base):
     def __repr__(self):
         return f"MemberORM('{self.name}' member_id = {self.member_id})"
 
+class UserORM(Base):
+        __tablename__ = "users"
+        id = Column(Integer, primary_key=True)
+        user_name = Column(String, unique=True)
+        hashed_password = Column(String, nullable=False)
+
+        def __repr__(self):
+            return f"UserORM('{self.user_name}')"
+    
+

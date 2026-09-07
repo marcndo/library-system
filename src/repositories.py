@@ -1,7 +1,8 @@
 from sqlalchemy import select
-from src.db_models import BookORM, MemberORM
+from src.db_models import BookORM, MemberORM, UserORM
 from src.book import Book
 from src.member import Member
+from src.user import User
 
 
 
@@ -95,4 +96,29 @@ class MemberRepository:
         for orm_member in self.session.scalars(select(MemberORM)).all():
             members.append(self._to_domain(orm_member))
         return members
+
+
+class UserRepository:
+    def __init__(self, session):
+        self.session = session
+
+    def get_user_by_name(self, name):
+        stmt = select(UserORM).where(UserORM.user_name==name)
+        orm_user = self.session.scalars(stmt).first()
+        if not orm_user:
+            return 
+        return self._to_domain(orm_user)
+
+    def _to_domain(self, user:UserORM):
+        return User(user.user_name, user.hashed_password)
+
+    def add_user(self, user:User):
+        user = self._to_orm(user)
+        self.session.add(user)
+        self.session.flush()
+
+    def _to_orm(self, user:User):
+        return UserORM(
+            user_name = user.user_name, hashed_password=user.hashed_password
+        )
 
