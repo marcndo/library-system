@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI,Depends, HTTPException, status
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from src.repositories import BookRepository, MemberRepository, UserRepository
@@ -9,11 +9,16 @@ from src.user import User
 from fastapi import Request
 from fastapi.responses import JSONResponse
 from sqlalchemy.exc import IntegrityError
-
+from datetime import datetime, timedelta, timezone
+from fastapi.security import OAuth2PasswordRequestForm
+import jwt
 
 app = FastAPI()
 engine = create_engine("sqlite:///library.db")
 
+SECRET_KEY ="6bb3500c8d8dbdf35e7b4a5a8d4a995cdb6c9bd8a2efca7db2f181c6458ebefc"
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 @app.exception_handler(ValueError)
 async def value_error_handler(request: Request, exc:ValueError):
@@ -93,6 +98,30 @@ def create_user(request:UserCreateRequest):
         user_repo.add_user(user)
         session.commit()
     return {"user_name":user.user_name}
+
+
+def create_access_token(user_name: str):
+        expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        to_encode = {"sub": user_name, "exp": expire}
+        return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+
+@app.post("/token")
+def login(form_data: OAuth2PasswordRequestForm = Depends()):
+    with Session(engine) as session:
+        user_repo = UserRepository(session)
+        user_name = form_data.username
+        user = user_repo.get_user_by_name(user_name)
+        if user is None  or not user.verify_password(form_data.password):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Incorrect username or password",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        access_token = create_access_token(form_data.username)
+        return {"access_token": access_token,"token_type":"bearer"}
+
+
 
 
 
