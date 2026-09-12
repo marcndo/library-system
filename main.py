@@ -12,7 +12,7 @@ from sqlalchemy.exc import IntegrityError
 from datetime import datetime, timedelta, timezone
 from fastapi.security import OAuth2PasswordRequestForm,  OAuth2PasswordBearer
 from jwt.exceptions import InvalidTokenError
-
+from fastapi.staticfiles import StaticFiles
 import jwt
 
 app = FastAPI()
@@ -43,6 +43,8 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
         if user is None:
             raise credentials_exception
         return user
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 @app.exception_handler(ValueError)
 async def value_error_handler(request: Request, exc:ValueError):
