@@ -12,11 +12,32 @@
         <label for="username">Username</label>
         <input type="text" id="username" required>
 
-        <label for="password">password</label>
+        <label for="password">password</label> 
         <input type="password" id="password" required>
 
         <button type="submit">Log In</button>
     </form>
     <p id="error-message" style="color: red;"></p>
+    <script>
+        document.getElementById("login-form").addEventListener("submit", async function(event){
+            event.preventDefault()
+
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+        const response = await fetch("/token", {
+            method : "POST",
+            headers: {"Content-type": "application/x-www-form-urlencoded" },
+            body: `username=${username}&password=${password}`,
+        });
+        if (response.ok){
+            const  data = await response.json();
+            localStorage.setItem("access_token", data.access_token);
+            window.location.href = "/static/index.html";
+        } else {
+            document.getElementById("error-message").textContent = "Login failed. Check your username and password.";
+        }
+    });
+    </script>
 </body>
 </html>
+
