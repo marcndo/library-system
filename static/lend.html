@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
+    <nav id="nav"></nav>
     <h1>Lend a Book</h1>
     <a href="/static/index.html">Back to Books</a>
 
@@ -19,7 +20,7 @@
         <button type="submit">Lend</button>
     </form>
     <p id="result-message"></p>
-
+    <script src="/static/nav.js"></script>
     <script>
         document.getElementById("lend-form").addEventListener("submit", async function(event) {
             event.preventDefault();

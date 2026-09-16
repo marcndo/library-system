@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Library System — Register</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <nav id="nav"></nav>
+
+    <h1>Create an Account</h1>
+    <form id="register-form">
+        <label for="user_name">Username</label>
+        <input type="text" id="user_name" required>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" required>
+
+        <button type="submit">Register</button>
+    </form>
+    <p id="result-message"></p>
+
+    <script src="/static/nav.js"></script>
+    <script>
+        document.getElementById("register-form").addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const user_name = document.getElementById("user_name").value;
+            const password = document.getElementById("password").value;
+            const messageEl = document.getElementById("result-message");
+
+            const response = await fetch("/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ user_name: user_name, password: password }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                messageEl.style.color = "green";
+                messageEl.textContent = `Account created for ${data.user_name}. You can now log in.`;
+                document.getElementById("register-form").reset();
+            } else {
+                messageEl.style.color = "red";
+                messageEl.textContent = data.detail || "Registration failed.";
+            }
+        });
+    </script>
+</body>
+</html>

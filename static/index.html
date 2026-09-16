@@ -6,11 +6,12 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
+    <nav id="nav"></nav>
     <h1>Available Books</h1>
     <a href="/static/login.html">Log In</a>
     <a href="/static/lend.html">Lend a Book</a>
     <div id="book-list"></div>
-
+    <script src="/static/nav.js"></script>
     <script>
         async function loadBooks() {
             const response = await fetch("/books");
