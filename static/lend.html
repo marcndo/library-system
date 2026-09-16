@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Library System — Lend a Book</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>Lend a Book</h1>
+    <a href="/static/index.html">Back to Books</a>
+
+    <form id="lend-form">
+        <label for="isbn">ISBN</label>
+        <input type="text" id="isbn" required>
+
+        <label for="member_id">Member ID</label>
+        <input type="text" id="member_id" required>
+
+        <button type="submit">Lend</button>
+    </form>
+    <p id="result-message"></p>
+
+    <script>
+        document.getElementById("lend-form").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const token = localStorage.getItem("access_token");
+            if (!token) {
+                document.getElementById("result-message").textContent = "Please log in first.";
+                return;
+            }
+
+            const isbn = document.getElementById("isbn").value;
+            const memberId = document.getElementById("member_id").value;
+
+            const response = await fetch("/lend", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify({ isbn: isbn, member_id: memberId }),
+            });
+
+            const data = await response.json();
+            const messageEl = document.getElementById("result-message");
+            if (response.ok) {
+                messageEl.style.color = "green";
+                messageEl.textContent = data.message || "Book lent successfully.";
+            } else {
+                messageEl.style.color = "red";
+                messageEl.textContent = data.detail || "Lend failed.";
+            }
+        });
+    </script>
+</body>
+</html>
