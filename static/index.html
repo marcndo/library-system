@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Library System - Books</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>Available Books</h1>
+    <a href="/static/login.html">Log In</a>
+    <div id="book-list"></div>
+
+    <script>
+        async function loadBooks() {
+            const response = await fetch("/books");
+            const books = await response.json();
+
+            const container = document.getElementById("book-list");
+            for (const book of books) {
+                const bookElement = document.createElement("div");
+                bookElement.textContent = `${book.title} by ${book.author} — ${book.is_borrowed ? "Borrowed" : "Available"}`;
+                container.appendChild(bookElement);
+            }
+        }
+
+        loadBooks();
+    </script>
+</body>
+</html>
