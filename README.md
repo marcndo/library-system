@@ -154,63 +154,145 @@ Register librarian
 
 Interactive API documentation is available through FastAPI's generated documentation.
 
+## Authentication & Authorization
 
+The application uses username/password authentication with JWT bearer tokens to protect lending operations.
 
-## Class Diagram
+### Authentication Flow
 
-```mermaid
-classDiagram
-    class AbstractBook {
-        <<abstract>>
-        +borrow()
-        +return_book()
-    }
-    class Book {
-        +title: str
-        +isbn: str
-        +is_borrowed: bool
-        +author: str
-        +borrow()
-        +return_book()
-    }
-    class Ebook {
-        +title: str
-        +isbn: str
-        +is_borrowed: bool
-        +file_size_mb: float
-        +borrow()
-        +return_book()
-    }
-    class Member {
-        +name: str
-        +member_id: str
-        +borrowed_books: list
-    }
-    class Library {
-        +books: dict
-        +members: dict
-        +add_book()
-        +add_member()
-        +lend_book()
-    }
-    AbstractBook <|-- Book
-    AbstractBook <|-- Ebook
-    Library o-- Book
-    Library o-- Member
+```text
+Librarian
+    │
+    │ Register credentials
+    ▼
+POST /register
+    │
+    ▼
+User account created
+    │
+    │ Login
+    ▼
+POST /token
+    │
+    ▼
+JWT access token
+    │
+    │ Bearer token
+    ▼
+POST /lend
+    │
+    ▼
+get_current_user()
+    │
+    ▼
+Lending operation
 ```
 
-## Running Locally
+### Implementation
+
+* **User registration** — `POST /register` creates a librarian account.
+* **Password protection** — User credentials are stored using a hashed-password field rather than storing the plaintext password.
+* **Login** — `POST /token` validates the supplied username and password.
+* **JWT authentication** — Successful authentication returns a JWT access token using the Bearer token scheme.
+* **Protected lending endpoint** — `POST /lend` requires an authenticated user through FastAPI's dependency injection.
+* **Invalid credentials** — Failed authentication returns `401 Unauthorized`.
+
+The authentication flow separates credential verification from protected library operations, allowing lending functionality to be accessed only by authenticated users.
+
+## Validation & Error Handling
+
+The application validates incoming API requests through Pydantic request models and enforces additional data integrity constraints at the database and application levels.
+
+### Request Validation
+
+API request bodies are defined using Pydantic models, including:
+
+* `BookCreateRequest` for adding books.
+* `BookLendRequest` for lending operations.
+* `UserCreateRequest` for librarian registration.
+
+This ensures that incoming request data conforms to the expected structure before it reaches the application logic.
+
+### Data Integrity
+
+The database also enforces constraints on important fields:
+
+* Book ISBNs are unique.
+* Member IDs are unique.
+* Required fields such as book title, author, ISBN, member name, and hashed password cannot be null.
+* A book's `member_id` may be null when the book is not currently associated with a member.
+
+### Authentication Errors
+
+Authentication failures are explicitly handled by the login endpoint. When the supplied username or password is invalid, the API returns:
+
+```text
+401 Unauthorized
+```
+
+with an appropriate authentication response.
+
+### Business-Rule Validation
+
+The library domain logic also handles invalid lending operations, including cases such as:
+
+* Attempting to lend a book that is already borrowed.
+* Attempting to lend an unregistered book.
+* Attempting to lend a book to an unregistered member.
+
+These behaviors are covered by automated tests to verify that invalid lending operations are handled correctly.
+
+
+## Testing
+
+The project uses **Pytest** for automated testing of the core library functionality and business rules.
+
+The test suite covers books, ebooks, and library operations:
+
+```text
+tests/
+├── test_book.py
+├── test_ebook.py
+└── test_library.py
+```
+
+### Tested Behaviors
+
+The tests verify important application behaviors, including:
+
+* Creating and configuring books correctly.
+* Setting and updating book lending status.
+* Lending a book successfully.
+* Preventing a book from being borrowed when it is already borrowed.
+* Rejecting lending attempts for unregistered books.
+* Rejecting lending attempts for unregistered members.
+
+This provides coverage for both expected application behavior and invalid lending scenarios.
+
+### Running the Tests
+
+Run the complete test suite with:
 
 ```bash
-git clone https://github.com/marcndo/library-system.git
-cd library-system
-pip install -r requirements.txt
-python3 -m pytest    # run the test suite
+python3 -m pytest
 ```
 
-## Design Documentation
-
-Full CRC cards and design reasoning: [docs/design.md](docs/design.md)
+The test suite helps ensure that changes to the library domain logic do not unintentionally break existing behavior.
 
 
+## Tech Stack
+
+| Category             | Technology                 |
+| -------------------- | -------------------------- |
+| **Language**         | Python                     |
+| **API Framework**    | FastAPI                    |
+| **ORM**              | SQLAlchemy                 |
+| **Database**         | SQLite                     |
+| **Data Validation**  | Pydantic                   |
+| **Authentication**   | JWT / OAuth2 Bearer Tokens |
+| **Password Hashing** | pwdlib                     |
+| **Testing**          | Pytest                     |
+| **Frontend**         | HTML, CSS, JavaScript      |
+| **Containerization** | Docker                     |
+| **Deployment**       | Render                     |
 
