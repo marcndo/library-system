@@ -296,3 +296,58 @@ The test suite helps ensure that changes to the library domain logic do not unin
 | **Containerization** | Docker                     |
 | **Deployment**       | Render                     |
 
+
+## Getting Started
+
+### Prerequisites
+
+Make sure the following are installed on your system:
+
+* Python 3.12+
+* Git
+
+### Installation
+
+Clone the repository and navigate into the project directory:
+
+```bash
+git clone git@github.com:marcndo/library-system.git
+cd <project-directory>
+```
+
+Create and activate a virtual environment:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+Install the project dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+### Running Locally
+
+Start the FastAPI application with:
+
+```bash
+uvicorn main:app --reload
+```
+
+The application will start a local development server.
+
+Once the server is running, you can access:
+
+* The web interface through the application's root/static page.
+* The interactive API documentation through FastAPI's `/docs` endpoint.
+
+### Running Tests
+
+Run the automated test suite with:
+
+```bash
+python3 -m pytest
+```
+
