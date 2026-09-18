@@ -7,7 +7,7 @@ from pydantic import BaseModel
 from src.book import Book
 from src.user import User
 from fastapi import Request
-from fastapi.responses import JSONResponse, redirectResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime, timedelta, timezone
 from fastapi.security import OAuth2PasswordRequestForm,  OAuth2PasswordBearer
@@ -76,7 +76,7 @@ class UserCreateRequest(BaseModel):
 
 @app.get("/")
 def read_root():
-    return redirectResponse(url="/static/index.html")
+    return RedirectResponse(url="/static/index.html")
 
 @app.get("/books")
 def get_books():
