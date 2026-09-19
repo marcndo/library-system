@@ -131,7 +131,7 @@ The application exposes a REST API for managing books, lending operations, and l
 | `POST` | `/register`     | Register a librarian account                           | No             |
 | `POST` | `/token`        | Authenticate a librarian and obtain a JWT access token | No             |
 
-### Example Workflow
+### Workflow
 
 ```text
 Register librarian
